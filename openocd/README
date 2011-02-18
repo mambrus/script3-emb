@@ -1,0 +1,3 @@
+Files/scripts for development using OpenOCD
+
+cmd.exp		- Sends a command to the OpenOCD server 

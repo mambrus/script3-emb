@@ -1,0 +1,86 @@
+#!/usr/bin/expect --
+#
+# Author: Michael Ambrus (ambrmi09@gmail.com)
+# Butt-Ugly-Software (BUS)
+# 2010-01-27
+
+#== Indernal and debugg variables ====================
+	
+	exp_internal 0
+	log_user 0
+	#exp_internal -f "/tmp/openocd_cmd-int.log" 0
+	set logfile [open "/tmp/openocd_cmd.log" "a"]
+
+#== Some variables ===================================
+	
+	set HOST				"localhost"
+	set PORT				"4444"
+	
+#== Get some external vars ===========================
+
+#	set some_var			$env(SOME_VAR)  
+
+#== Functions ========================================
+
+proc sleep {timeout} {
+	expect
+}
+
+#=====================================================
+	puts $logfile "*** Starting openocd_cmd shell wrapper"
+	flush $logfile
+
+	puts $logfile "With the following arguments:"		
+	puts $logfile [lindex $argv 0]
+	set ArgS [lindex $argv 0]
+	set argc [llength $argv]
+	
+	for {set i 1} {$i < $argc} {incr i} {
+		puts $logfile [lindex $argv $i]
+		set ArgS "$ArgS [lindex $argv $i]"
+	}
+	puts $logfile "Sys=> Argument string passed: $ArgS"
+	flush $logfile
+
+	puts $logfile "Communicating with OpenODB as follows:"
+	puts $logfile "telnet $HOST $PORT"
+	flush $logfile
+
+	spawn "telnet" $HOST $PORT
+
+	puts $logfile "--> Waiting for server to respond"
+	flush $logfile
+
+	set timeout 15
+	
+	#Handshaking commands
+	#====================
+	expect {
+		timeout {
+			puts $logfile "WTF 1(2)?"
+			flush $logfile
+			exit 1
+		} 
+		">" {
+			puts $logfile "Telnet responed as expexted"
+		}
+	}
+
+	puts $logfile "Sending: $ArgS \n"
+	send "$ArgS\n"
+	expect {
+		timeout {
+			puts $logfile "WTF 2(2)?"
+			flush $logfile
+			exit 1
+		} 
+		">" {
+			puts $logfile "Telnet responed as expexted"
+		}
+	}
+	puts $logfile "<-- Command executed"
+	flush $logfile
+	
+
+	exit 0
+

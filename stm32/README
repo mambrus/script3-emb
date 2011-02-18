@@ -1,0 +1,4 @@
+Files/scripts specific for stm32 development
+
+
+flash.sh	- Flash a project down to target. Can also be used as a GW to send specific commands to the OpenOCD server
