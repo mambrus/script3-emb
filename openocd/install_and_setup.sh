@@ -10,8 +10,13 @@ if [ -z "${MAKEOPTS}" ]; then
 	MAKEOPTS="-j3"
 fi
 
-source user_response.sh
-source test_install.sh
+set -e
+
+source s3.user_response.sh
+source s3.test_install_bin.sh
+source s3.test_install_pkg.sh
+
+#set -u
 
 test_install_bin gcc
 test_install_bin make
@@ -59,8 +64,8 @@ git reset --hard v0.4.0-rc2
 ./bootstrap
 cd ../build/
 ../src/configure \
-  --enable-maintainer-mode \
-  --enable-ft2232_libftdi  \
-  --prefix=${HOME}
+	--enable-maintainer-mode \
+	--enable-ft2232_libftdi	\
+	--prefix=${HOME}
 make $MAKEOPTS
 make install
