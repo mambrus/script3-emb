@@ -1,25 +1,31 @@
 #!/bin/bash
-FLASH_STM32_SH="flash_stm32.sh"
 
-HOST=localhost
-PORT=4444
-OTN="telnet $HOST $PORT"
+if [ -z $FLASH_SH ]; then
+
+FLASH_SH="flash.sh"
+
 BIN=main.bin
 
-function flashit() {
-	openocd_cmd.exp reset halt
-	openocd_cmd.exp flash probe 0
-	openocd_cmd.exp stm32x mass_erase 0
-	openocd_cmd.exp flash write_bank 0 main.bin 0
-	openocd_cmd.exp reset halt
+function flash() {
+	emb.openocd.cmd.exp reset halt
+	emb.openocd.cmd.exp flash probe 0
+	emb.openocd.cmd.exp stm32x mass_erase 0
+	emb.openocd.cmd.exp flash write_bank 0 $1 0
+	emb.openocd.cmd.exp reset halt
 }
 
-if [ "$FLASH_STM32_SH" == $( basename $0 ) ]; then
-	#Not sourced, do something with this.
+source s3.ebasename.sh
+
+if [ "$FLASH_SH" == $( ebasename $0 ) ]; then
+	#Not sourced, do something with this
+	set -e
+	set -u
+
 	if [ $# -ge 1 ]; then
-		openocd_cmd.exp $@
+		emb.openocd.cmd.exp $@
 	else
-		flashit
+		flash $BIN
 	fi
 fi
 
+fi
