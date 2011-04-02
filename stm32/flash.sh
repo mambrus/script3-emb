@@ -4,8 +4,6 @@ if [ -z $FLASH_SH ]; then
 
 FLASH_SH="flash.sh"
 
-BIN=main.bin
-
 function flash() {
 	emb.openocd.cmd.exp reset halt
 	emb.openocd.cmd.exp flash probe 0
@@ -19,11 +17,15 @@ source s3.ebasename.sh
 if [ "$FLASH_SH" == $( ebasename $0 ) ]; then
 	#Not sourced, do something with this
 	set -e
-	set -u
+	#set -u
+	source s3.user_response.sh
+
+	BIN=$( (ls *.bin 2>/dev/null; ls *.elf 2>/dev/null) | tail -1 )
 
 	if [ $# -ge 1 ]; then
 		emb.openocd.cmd.exp $@
 	else
+		ask_user_continue "Flash target with [${BIN}]? (Y/n)" || exit 1
 		flash $BIN
 	fi
 fi
