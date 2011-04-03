@@ -60,7 +60,18 @@ proc sleep {timeout} {
 			puts $logfile "WTF 1(2)?"
 			flush $logfile
 			exit 1
-		} 
+		}
+		"error" {
+			send_user "$expect_out(buffer)"
+			expect {
+				">" {
+					puts $logfile "Telnet responed as expexted"
+					puts $logfile "Error detected"
+					send_user "$expect_out(buffer)\n"
+					exit 1
+				}
+			}
+		}
 		">" {
 			puts $logfile "Telnet responed as expexted"
 		}
@@ -74,6 +85,17 @@ proc sleep {timeout} {
 			flush $logfile
 			exit 1
 		} 
+		"error" {
+			send_user "$expect_out(buffer)"
+			expect {
+				">" {
+					puts $logfile "Telnet responed as expexted"
+					puts $logfile "Error detected"
+					send_user "$expect_out(buffer)\n"
+					exit 1
+				}
+			}
+		}
 		">" {
 			puts $logfile "Telnet responed as expexted"
 		}
