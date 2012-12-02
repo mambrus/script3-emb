@@ -5,20 +5,20 @@
 # 2010-01-27
 
 #== Indernal and debugg variables ====================
-	
+
 	exp_internal 0
 	log_user 0
 	#exp_internal -f "/tmp/openocd_cmd-int.log" 0
 	set logfile [open "/tmp/openocd_cmd.log" "a"]
 
 #== Some variables ===================================
-	
+
 	set HOST				"localhost"
 	set PORT				"4444"
-	
+
 #== Get some external vars ===========================
 
-#	set some_var			$env(SOME_VAR)  
+#	set some_var			$env(SOME_VAR)
 
 #== Functions ========================================
 
@@ -30,11 +30,11 @@ proc sleep {timeout} {
 	puts $logfile "*** Starting openocd_cmd shell wrapper"
 	flush $logfile
 
-	puts $logfile "With the following arguments:"		
+	puts $logfile "With the following arguments:"
 	puts $logfile [lindex $argv 0]
 	set ArgS [lindex $argv 0]
 	set argc [llength $argv]
-	
+
 	for {set i 1} {$i < $argc} {incr i} {
 		puts $logfile [lindex $argv $i]
 		set ArgS "$ArgS [lindex $argv $i]"
@@ -52,7 +52,7 @@ proc sleep {timeout} {
 	flush $logfile
 
 	set timeout 15
-	
+
 	#Handshaking commands
 	#====================
 	expect {
@@ -84,7 +84,7 @@ proc sleep {timeout} {
 			puts $logfile "WTF 2(2)?"
 			flush $logfile
 			exit 1
-		} 
+		}
 		"error" {
 			send_user "$expect_out(buffer)"
 			expect {
@@ -102,7 +102,7 @@ proc sleep {timeout} {
 	}
 	puts $logfile "<-- Command executed"
 	flush $logfile
-	
+
 
 	exit 0
 
