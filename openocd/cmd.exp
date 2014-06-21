@@ -67,10 +67,16 @@ proc sleep {timeout} {
 				">" {
 					puts $logfile "Telnet responed as expexted"
 					puts $logfile "Error detected"
-					send_user "$expect_out(buffer)\n"
+					puts stderr "$expect_out(buffer)\n"
 					exit 1
 				}
 			}
+		}
+		-re "Connection closed.*$" {
+			puts $logfile "Error: openocd server kicked us out...:"
+			puts $logfile "$expect_out(buffer)"
+			puts stderr "$expect_out(buffer)\n"
+			exit 1
 		}
 		">" {
 			puts $logfile "Telnet responed as expexted"
@@ -86,15 +92,27 @@ proc sleep {timeout} {
 			exit 1
 		}
 		"error" {
-			send_user "$expect_out(buffer)"
+			puts stderr "$expect_out(buffer)"
 			expect {
 				">" {
-					puts $logfile "Telnet responed as expexted"
+					puts $logfile "Telnet responded as expected"
 					puts $logfile "Error detected"
-					send_user "$expect_out(buffer)\n"
+					puts stderr "$expect_out(buffer)\n"
 					exit 1
 				}
 			}
+		}
+		-re "couldn't open.*$" {
+			puts $logfile "Error in response:"
+			puts $logfile "$expect_out(buffer)"
+			puts stderr "$expect_out(buffer)\n"
+			exit 1
+		}
+		-re "DEPRECATED!.*$" {
+			puts $logfile "Error in response:"
+			puts $logfile "$expect_out(buffer)"
+			puts stderr "$expect_out(buffer)\n"
+			exit 1
 		}
 		">" {
 			puts $logfile "Telnet responed as expexted"
